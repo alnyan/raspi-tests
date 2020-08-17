@@ -30,7 +30,10 @@ OBJS=$(O)/arch/aarch64/bcm283x/entry.S.o \
 	 $(O)/arch/aarch64/mem/map.c.o \
 	 $(O)/arch/aarch64/mem/mem.c.o \
 	 $(O)/arch/aarch64/mem/early.S.o \
+	 $(O)/arch/aarch64/exc.c.o \
+	 $(O)/sys/kernel.c.o \
 	 $(O)/sys/mem/pt.c.o \
+	 $(O)/sys/mem/phys.c.o \
 	 $(O)/sys/lib/printf.c.o \
 	 $(O)/sys/lib/string.c.o \
 	 $(O)/sys/debug.c.o

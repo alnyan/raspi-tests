@@ -36,6 +36,11 @@ _bsp_entry_el2:
     msr spsr_el2, x2
     adr x2, _bsp_entry_el1
     msr elr_el2, x2
+
+    ldr x8, =_bsp_stack_top
+    msr sp_el1, x8
+    ldr x8, =vectors
+    msr vbar_el1, x8
     eret
 _bsp_entry_el1:
     // Prepare for higher-half code entry
@@ -59,6 +64,37 @@ _el_entry_tab:
     .dword _bsp_entry_el2 - KERNEL_OFFSET
     .dword _bsp_entry_el3 - KERNEL_OFFSET
 .size _el_entry_tab, . - _el_entry_tab
+
+.align 11
+vectors:
+    .align 7
+    mov x0, #0
+    mrs x1, esr_el1
+    mrs x2, elr_el1
+    mrs x3, spsr_el1
+    mrs x4, far_el1
+    b aarch64_exc_handler
+    .align 7
+    mov x0, #1
+    mrs x1, esr_el1
+    mrs x2, elr_el1
+    mrs x3, spsr_el1
+    mrs x4, far_el1
+    b aarch64_exc_handler
+    .align 7
+    mov x0, #2
+    mrs x1, esr_el1
+    mrs x2, elr_el1
+    mrs x3, spsr_el1
+    mrs x4, far_el1
+    b aarch64_exc_handler
+    .align 7
+    mov x0, #3
+    mrs x1, esr_el1
+    mrs x2, elr_el1
+    mrs x3, spsr_el1
+    mrs x4, far_el1
+    b aarch64_exc_handler
 
 .section .bss
 .align 8

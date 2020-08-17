@@ -8,7 +8,8 @@
 //                    MM_PAGE_KERNEL,
 //                    MM_PAGE_NX,
 //                    MM_PAGE_HUGE
-// * Func macros:     MM_VIRTUALIZE(addr)
+// * Func macros:     MM_VIRTUALIZE(addr),
+//                    MM_PHYS(vaddr)
 #if defined(ARCH_AARCH64)
 #include "arch/aarch64/mem/map.h"
 #endif
