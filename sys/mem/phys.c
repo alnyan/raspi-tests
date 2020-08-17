@@ -28,6 +28,27 @@ void mm_phys_init(uintptr_t at, size_t len) {
     }
 }
 
+uintptr_t mm_phys_page_alloc(void) {
+    for (size_t i = first_nonreserved >> 12; i < page_limit; ++i) {
+        if (phys_pages[i].usage == PU_UNSPEC && phys_pages[i].refcount == 0) {
+            ++phys_pages[i].refcount;
+            return i << 12;
+        }
+    }
+
+    return MM_NADDR;
+}
+
+void mm_phys_page_free(uintptr_t page) {
+    // TODO: check that page refcount is exactly 1
+    struct page *pg = GET_PAGE(page);
+    if (pg->usage != PU_DEVICE) {
+        // Return the page back to "unspecified" state
+        pg->usage = PU_UNSPEC;
+    }
+    pg->refcount = 0;
+}
+
 static bool can_commit(uintptr_t page) {
     extern char _kernel_start, _kernel_end;
     uintptr_t kernel_start = ((uintptr_t) &_kernel_start) & ~0xFFF;

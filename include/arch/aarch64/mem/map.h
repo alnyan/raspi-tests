@@ -3,6 +3,7 @@
 
 #define MM_VIRTUALIZE(addr)             ((uintptr_t) (addr) | 0xFFFFFF8000000000UL)
 #define MM_PHYS(addr)                   ((uintptr_t) (addr) & ~0xFFFFFF8000000000UL)
+#define MM_NADDR                        0xFFFFFFFFFFFFFFFFUL
 
 #define MM_PAGE_KERNEL                  (0 << 6)
 #define MM_PAGE_USER                    (1 << 6)
