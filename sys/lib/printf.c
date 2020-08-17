@@ -336,12 +336,8 @@ int vcprintf(void *ctx,
             } else {
                 // Unknown format or '%'
                 if (ch != '%') {
-                    if (ch == 'f' || ch == 'g') {
-                        (void) va_arg(ap, double);
-                    } else {
-                        if (out(ctx, &ch, 1) != 0) {
-                            goto end;
-                        }
+                    if (out(ctx, &ch, 1) != 0) {
+                        goto end;
                     }
                 } else {
                     if (out(ctx, &ch, 1) != 0) {

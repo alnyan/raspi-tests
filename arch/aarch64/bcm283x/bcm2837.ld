@@ -1,20 +1,23 @@
 ENTRY(_start);
 
+/* bits [63:42] select TTBR1 */
+KERNEL_OFFSET = 0xFFFFFF8000000000;
+
 SECTIONS {
-    . = 0x80000;
+    . = KERNEL_OFFSET + 0x80000;
 
     _kernel_start = .;
-    .text : ALIGN(4K) {
+    .text : AT(. - KERNEL_OFFSET) ALIGN(4K) {
         *(.text.boot)
         *(.text)
-        *(.rodata)
+        *(.rodata*)
     }
 
-    .data : ALIGN(4K) {
+    .data : AT(. - KERNEL_OFFSET) ALIGN(4K) {
         *(.data)
     }
 
-    .bss : ALIGN(4K) {
+    .bss : AT(. - KERNEL_OFFSET) ALIGN(4K) {
         *(.bss)
         *(COMMON)
     }

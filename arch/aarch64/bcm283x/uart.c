@@ -1,3 +1,4 @@
+#include "sys/mem/mm.h"
 #include "dev/serial.h"
 #include "sys/debug.h"
 #include "sys/list.h"
@@ -5,7 +6,7 @@
 static int bcm283x_muart_send(struct serial_device *dev, uint8_t ch) {
     (void) dev;
 
-    *((uint32_t *volatile) 0x3F215040) = (uint32_t) ch;
+    *((volatile uint32_t *) MM_VIRTUALIZE(0x3F215040)) = (uint32_t) ch;
 
     return 0;
 }

@@ -6,7 +6,10 @@ O=build
 CC=clang
 LD=ld.lld
 kernel_CFLAGS=-target aarch64 \
+			  -DARCH_AARCH64 \
+			  -mgeneral-regs-only \
 			  -Iinclude \
+			  -ggdb \
 			  -ffreestanding \
 			  -Werror \
 			  -Wextra \
@@ -14,8 +17,9 @@ kernel_CFLAGS=-target aarch64 \
 			  -Wpedantic \
 			  -Wno-gnu-statement-expression \
 			  -Wno-language-extension-token \
-			  -Wno-gnu-zero-variadic-macro-arguments
-kernel_LDLFAGS=
+			  -Wno-gnu-zero-variadic-macro-arguments \
+			  -Wno-gnu-binary-literal
+kernel_LDFLAGS=-O0
 kernel_LDS=arch/aarch64/bcm283x/bcm2837.ld
 ###
 DIRS=$(shell find sys arch dev -type d -printf "$(O)/%p ")
@@ -23,6 +27,10 @@ OBJS=$(O)/arch/aarch64/bcm283x/entry.S.o \
 	 $(O)/arch/aarch64/bcm283x/entry.c.o \
 	 $(O)/arch/aarch64/bcm283x/uart.c.o \
 	 $(O)/arch/aarch64/bcm283x/mbox.c.o \
+	 $(O)/arch/aarch64/mem/map.c.o \
+	 $(O)/arch/aarch64/mem/mem.c.o \
+	 $(O)/arch/aarch64/mem/early.S.o \
+	 $(O)/sys/mem/pt.c.o \
 	 $(O)/sys/lib/printf.c.o \
 	 $(O)/sys/lib/string.c.o \
 	 $(O)/sys/debug.c.o

@@ -1,7 +1,7 @@
 #pragma once
 #include "sys/lib/printf.h"
 
-#define kdebug(fmt, ...)    debug_printf("[%s:%u] " fmt "\n", __FILE__, __LINE__, #__VA_ARGS__)
+#define kdebug(fmt, ...)    debug_printf(fmt "\n", #__VA_ARGS__)
 
 struct serial_device;
 
