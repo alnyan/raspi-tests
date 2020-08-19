@@ -1,25 +1,12 @@
 .set KERNEL_OFFSET, 0xFFFFFF8000000000
 // Code for early setup of higher-half virtual memory
 .section .text
-.extern aarch64_l1_kernel
+.global aarch64_setup_identity_table
 .global aarch64_early_higher_half
+// Args:
+//  x9 - L1 page table (aligned block of 512 64-bit entries)
+//  x8 - Entry point, with KERNEL_OFFSET applied
 aarch64_early_higher_half:
-    ldr x0, =aarch64_l1_kernel - KERNEL_OFFSET
-
-    // Setup entries for identity mapping
-    mov x1, xzr
-1:  // Point entry to 1G block: x1 << 30
-    lsl x2, x1, #30
-    orr x2, x2, #(1 << 0)   /* Present */
-    orr x2, x2, #(1 << 10)  /* Accessed */
-    orr x2, x2, #(3 << 8)   /* Inner shareable */
-
-    str x2, [x0, x1, lsl #3]
-
-    add x1, x1, #1
-    cmp x1, #512
-    bne 1b
-
     // Setup no-cache attributes in MAIR[0]
     mov x1, #(4 << 4) | (4 << 0)
     msr mair_el1, x1
@@ -40,8 +27,8 @@ aarch64_early_higher_half:
     isb
 
     // Write TTBRn
-    msr ttbr0_el1, x0
-    msr ttbr1_el1, x0
+    msr ttbr0_el1, x9
+    msr ttbr1_el1, x9
 
     // Write system control register
     dsb ish
@@ -75,3 +62,22 @@ _now_high:
     br x8
 _no_4k_gran:
     b .
+
+// Args:
+//  x9 - page table
+aarch64_setup_identity_table:
+    // Setup entries for identity mapping
+    mov x1, xzr
+1:  // Point entry to 1G block: x1 << 30
+    lsl x2, x1, #30
+    orr x2, x2, #(1 << 0)   /* Present */
+    orr x2, x2, #(1 << 10)  /* Accessed */
+    orr x2, x2, #(3 << 8)   /* Inner shareable */
+
+    str x2, [x9, x1, lsl #3]
+
+    add x1, x1, #1
+    cmp x1, #512
+    bne 1b
+
+    ret
